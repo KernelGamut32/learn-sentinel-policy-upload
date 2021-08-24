@@ -36,7 +36,4 @@ instance_type_allowed = rule {
 }
 
 # Main rule that requires other rules to be true
-main = rule {
-    (instance_type_allowed and mandatory_instance_tags) else true
-}
-
+main = rule { instance_type_allowed and mandatory_instance_tags }
