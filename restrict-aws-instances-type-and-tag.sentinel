@@ -1,9 +1,9 @@
 # Imports mock data
 import "tfplan/v2" as tfplan
 
-# Get all AWS instances from all modules
-ec2_instances = filter tfplan.resource_changes as _, rc {
-    rc.type is "aws_instance" and
+# Get all AWS launch configurations from all modules
+ec2_launch_configurations = filter tfplan.resource_changes as _, rc {
+    rc.type is "aws_launch_configuration" and
         (rc.change.actions contains "create" or rc.change.actions is ["update"])
 }
 
@@ -21,7 +21,7 @@ allowed_types = [
 
 # Rule to enforce "Name" tag on all instances
 mandatory_instance_tags = rule {
-    all ec2_instances as _, instance {
+    all ec2_launch_configurations as _, instance {
         all mandatory_tags as mt {
             instance.change.after.tags contains mt
         }
@@ -30,7 +30,7 @@ mandatory_instance_tags = rule {
 
 # Rule to restrict instance types
 instance_type_allowed = rule {
-    all ec2_instances as _, instance {
+    all ec2_launch_configurations as _, instance {
         instance.change.after.instance_type in allowed_types
     }
 }
